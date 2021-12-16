@@ -1,0 +1,1 @@
+2021-01-26 12:42:45 INFO     Creating de Bruijn graph for input/interleaved_noerror_100k.fastq with k=30

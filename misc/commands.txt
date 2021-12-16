@@ -1,0 +1,22 @@
+
+
+awk -F '>| ' 'NR==FNR{ids[$0]; next} NF>1{f=($2 in ids)} f' SRP257442_ctg_ids /data/tobias/ncbi_assemblies/opt_assemblies/SRP257442/final.contigs.fa > SRP257442_sighits.fasta
+
+awk '{print $2}' blastn_spacers_opt_assemblies/SRP257442_blastn_results.out | sort | uniq > ctg_ids
+
+
+extract fasta sequences for each target. Run virFinder and annotate in blast output as viral or not
+
+
+for i in {0..23}; do awk -F "," '!/name/{print $2}' virfinder_out_fdr0.05/${i}_virfinder_out | sed 's/"//g’ > sequence_ids_fdr/${i}_ids.txt; done
+> ^C
+tmeier@newton:/data/tobias/optimized_assembler/assemblies/reference_assemblies/megahit/nancy> for i in {0..23}; do awk -F "," '!/name/{print $2}' virfinder_out_fdr0.05/${i}_virfinder_out | sed 's/"//g’ > sequ
+ence_ids_fdr/${i}_ids.txt; done
+> ^C
+tmeier@newton:/data/tobias/optimized_assembler/assemblies/reference_assemblies/megahit/nancy> for i in {0..23}; do awk -F "," '!/name/{print $2}' virfinder_out_fdr0.05/${i}_virfinder_out | sed 's/"//g' > sequ
+ence_ids_fdr/${i}_ids.txt; done
+tmeier@newton:/data/tobias/optimized_assembler/assemblies/reference_assemblies/megahit/nancy> for i in {0..23}; do awk -F'>' 'NR==FNR{ids[$0]; next} NF>1{f=($2 in ids)} f' sequence_ids_fdr/${i}_ids.txt contig
+s_500/${i}_contigs500.fasta > contigs_fdr0.05/${i}_contigs_fdr0.05.fasta; done
+
+
+/tools/src/bbmap/dedupe.sh in=0_contigs_fdr0.05.fasta,1_contigs_fdr0.05.fasta,2_contigs_fdr0.05.fasta,3_contigs_fdr0.05.fasta,6_contigs_fdr0.05.fasta,7_contigs_fdr0.05.fasta,8_contigs_fdr0.05.fasta,9_contigs_fdr0.05.fasta,10_contigs_fdr0.05.fasta,11_contigs_fdr0.05.fasta,12_contigs_fdr0.05.fasta,13_contigs_fdr0.05.fasta,14_contigs_fdr0.05.fasta,15_contigs_fdr0.05.fasta,16_contigs_fdr0.05.fasta,17_contigs_fdr0.05.fasta,18_contigs_fdr0.05.fasta,19_contigs_fdr0.05.fasta,20_contigs_fdr0.05.fasta,21_contigs_fdr0.05.fasta22_contigs_fdr0.05.fasta23_contigs_fdr0.05.fasta out=../contigs_fdr0.05_nonredundant/contigs_fdr.0.05_nonredundant.fasta minidentity=99 threads=4 uniquenames=t overwrite=true 2> ./contigs_fdr0.05_nonredundant/stats

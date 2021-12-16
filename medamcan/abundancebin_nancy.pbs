@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -N abdbin
+#PBS -l select=1:mem=120gb:node_type=hsw:node_type_mem=128gb
+#PBS -l walltime=05:00:00
+
+# Change to the direcotry that the job was submitted from
+cd $PBS_O_WORKDIR
+
+# input directories and reads
+INPUT=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/nancy/V_interleaved.fasta
+OUTPUT=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/nancy/viral_reference/log
+K=20
+
+/zhome/academic/HLRS/ibv/ibvtmeie/tools/abundancebin/abundancebin -input ${INPUT} -output ${OUTPUT} -kmer_len ${K} -RECURSIVE_CLASSIFICATION

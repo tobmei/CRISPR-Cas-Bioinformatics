@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N mbcc
+#PBS -l select=1:mem=100gb:ncpus=16:node_type=hsw:node_type_mem=128gb
+#PBS -l walltime=02:00:00
+
+# Change to the direcotry that the job was submitted from
+cd $PBS_O_WORKDIR
+
+# input directories and reads
+INPUT=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/nancy/V_interleaved.fasta
+
+java -jar -Xmx100g /zhome/academic/HLRS/ibv/ibvtmeie/tools/MBBC/MBBC.jar -i ${INPUT} -r 0

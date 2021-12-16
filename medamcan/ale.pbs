@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -N ale
+#PBS -l select=1:ncpus=20:mem=120gb:node_type=hsw:node_type_mem=128gb
+#PBS -l walltime=02:00:00
+
+# Change to the direcotry that the job was submitted from
+cd $PBS_O_WORKDIR
+
+MODE=low
+#MODE=mid
+#MODE=high
+
+SAMPLE=nancy
+#SAMPLE=bioreaktor
+
+OUT=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/mixture_assemblies/megahit/${SAMPLE}/ALE_${MODE}
+BAM=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/mixture_assemblies/megahit/${SAMPLE}/bbmap_${MODE}/${PBS_ARRAY_INDEX}_mapped.bam
+
+# input directories and reads
+CONTIGS=(/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/mixture_assemblies/megahit/${SAMPLE}/${MODE}/${PBS_ARRAY_INDEX}/final.contigs.fa)
+#CONTIGS=(/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/mixture_assemblies/metaspades/bioreaktor/${MODE}/${PBS_ARRAY_INDEX}/contigs.fasta)
+
+/zhome/academic/HLRS/ibv/ibvtmeie/tools/ALE/src/./ALE --nout --metagenome ${BAM} ${CONTIGS} ${OUT}/${PBS_ARRAY_INDEX}_ALEout.txt

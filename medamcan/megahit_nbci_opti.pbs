@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -N mgno
+#PBS -l select=1:ncpus=20:mem=120gb:node_type=hsw:node_type_mem=128gb
+#PBS -l walltime=6:00:00
+
+# Change to the direcotry that the job was submitted from
+cd $PBS_O_WORKDIR
+
+# input directories and reads
+FILES=(/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/data/ncbi/*)
+FILE="${FILES[$PBS_ARRAY_INDEX]}"
+
+READS_R1=(${FILE}/*.sra_1.fastq.gz_clean.fastq.gz)
+READS_R2=(${FILE}/*.sra_2.fastq.gz_clean.fastq.gz)
+
+echo "file: ${FILE}"
+
+printf -v joined_R1 '%s,' "${READS_R1[@]}"
+echo "reads R1: ${joined_R1%,}"
+printf -v joined_R2 '%s,' "${READS_R2[@]}"
+echo "reads R2: ${joined_R2%,}"
+
+NCBI_ID="$(basename ${FILE})"
+echo "ncbi id: ${NCBI_ID}"
+
+OUT_DIR=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/ncbi_assemblies_low_opti
+echo "out dir: ${OUT_DIR}"
+
+/zhome/academic/HLRS/ibv/ibvtmeie/tools/MEGAHIT-1.2.9-Linux-x86_64-static/bin/./megahit -1 ${joined_R1%,} -2 ${joined_R2%,} -t 20 --k-min 35 --k-max 145 --k-step 20 --prune-level 3 --bubble-level 1 -o /${OUT_DIR}/${NCBI_ID}

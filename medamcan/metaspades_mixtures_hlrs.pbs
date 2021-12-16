@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -N msxhigh
+#PBS -l select=2:ncpus=20:mem=125:node_type=hsw:node_type_mem=128gb
+#PBS -l walltime=03:00:00
+
+# Change to the direcotry that the job was submitted from
+cd $PBS_O_WORKDIR
+
+# input directories and reads
+JOB=(/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/mixture_assemblies/parameter_sets/megahit/${PBS_ARRAY_INDEX})
+
+SAMPLE=nancy
+#SAMPLE=bioreaktor
+
+READS_R1=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/${SAMPLE}/mixtures/MGV_R1_low.fastq.gz
+READS_R2=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/${SAMPLE}/mixtures/MGV_R1_low.fastq.gz
+#READS_R1=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/${SAMPLE}/mixtures/MGV_R1_mid.fastq.gz
+#READS_R2=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/${SAMPLE}/mixtures/MGV_R1_mid.fastq.gz
+#READS_R1=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/${SAMPLE}/mixtures/MGV_R1_high.fastq.gz
+#READS_R2=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/${SAMPLE}/mixtures/MGV_R1_high.fastq.gz
+
+JOB_ID="$(basename ${JOB})"
+
+KLIST=$(awk '/^kList:/{print $2}' ${JOB})
+
+echo "job ID: ${JOB_ID}"
+echo "klist: ${KLIST}"
+echo "job: ${JOB}"
+
+python tools/SPAdes-3.14.1-Linux/bin/metaspades.py -k ${KLIST} -1 ${READS_R1} -2 ${READS_R2} -o /lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/mixture_assemblies/metaspades/${JOB_ID} -t 20 -m 250

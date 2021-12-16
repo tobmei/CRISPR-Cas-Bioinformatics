@@ -1,0 +1,5 @@
+bio==0.1.0
+biopython==1.76
+gfapy==1.0.0
+numpy==1.18.2
+pkg-resources==0.0.0

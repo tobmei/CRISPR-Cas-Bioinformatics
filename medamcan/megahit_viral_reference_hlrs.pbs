@@ -1,0 +1,34 @@
+#!/bin/bash
+#PBS -N megascript
+#PBS -l select=1:ncpus=20:mem=120gb:node_type=hsw:node_type_mem=128gb
+#PBS -l walltime=03:00:00
+
+# Change to the direcotry that the job was submitted from
+cd $PBS_O_WORKDIR
+
+SAMPLE=nancy
+#SAMPLE=bioreaktor
+ASSEMBLER=megahit
+OUT_DIR=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/reference_assemblies/${SAMPLE}/${ASSEMBLER}
+
+
+# input directories and reads
+JOB=(/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/parameter_sets/megahit/${PBS_ARRAY_INDEX})
+READS_R1=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/data/${SAMPLE}/V_R1_clean.fastq.gz
+READS_R2=/lustre/nec/ws2/ws/ibvtmeie-metagenome_analysis/data/${SAMPLE}/V_R2_clean.fastq.gz
+JOB_ID="$(basename ${JOB})"
+
+KMIN=$(awk '/^kmin/{print $2}' ${JOB})
+KMAX=$(awk '/^kmax/{print $2}' ${JOB})
+KSTEP=$(awk '/^kstep/{print $2}' ${JOB})
+PRUNE=$(awk '/^prunelevel/{print $2}' ${JOB})
+BUBBLE=$(awk '/^bubble/{print $2}' ${JOB})
+
+echo "kmin: ${KMIN}"
+echo "kmax: ${KMAX}"
+echo "kstep: ${KSTEP}"
+echo "prunelevel: ${PRUNE}"
+echo "bubble: ${BUBBLE}"
+echo "job: ${JOB}"
+
+/zhome/academic/HLRS/ibv/ibvtmeie/tools/MEGAHIT-1.2.9-Linux-x86_64-static/bin/./megahit -1 ${READS_R1} -2 ${READS_R2} --k-min ${KMIN} --k-max ${KMAX} --k-step ${KSTEP} --bubble-level ${BUBBLE} --prune-level ${PRUNE} -o ${OUT_DIR}/${JOB_ID} -t 20
