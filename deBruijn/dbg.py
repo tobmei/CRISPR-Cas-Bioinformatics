@@ -7,6 +7,9 @@ import multiprocessing
 import pickle
 
 
+#debruijn implementation based on 
+#https://pmelsted.wordpress.com/2013/11/23/naive-python-implementation-of-a-de-bruijn-graph/
+
 def twin(km):
     return Seq.reverse_complement(km)
 
